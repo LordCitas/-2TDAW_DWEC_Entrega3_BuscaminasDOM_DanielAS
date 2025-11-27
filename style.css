@@ -3,6 +3,7 @@ body{
     background-position: center top;
     background-repeat: no-repeat;
     background-size: cover;
+    background-position: fixed;
     height: 100vh;
     color: white;
 }
@@ -10,11 +11,11 @@ body{
 #logo{
     display: flex;
     justify-content: center;
-    padding: 20px 0px;
+    padding: 30px 0px;
 }
 
 #logo>img{
-    width: 800px;
+    height: 15vh;
     filter: drop-shadow(2px 4px 6px black);
 }
 
@@ -26,6 +27,7 @@ body{
     justify-content: space-around;
     align-items: center;
     background-color: rgba(0, 0, 0, 0.349);
+    display: hidden;
 }
 
 #barraDeDatos>{
@@ -42,4 +44,21 @@ body{
     height: 40px;
     border-radius: 50%;
     padding: 0px 8px;
+}
+
+.tablero{
+    display: grid;
+    grid-template-rows: repeat(3, 1fr);
+    grid-template-columns: repeat(3, 1fr);
+    height: 80vh;
+}
+
+.casilla{
+    background-size: cover;
+}
+
+.casillaSinRevelar{
+    background-image: url("./img/7.webp");
+    border: solid 3px rgba(255, 255, 255, 0.103);
+
 }
