@@ -22,25 +22,6 @@ function generarMapa(){
     return mapaInicial;
 }
 
-function generarTableroHTML(){
-    const tablero = document.createElement('div');
-    tablero.classList.add('tablero');
-    tablero.style.gridTemplateRows = `repeat(${numFilas}, 100px)`;
-    tablero.style.gridTemplateColumns = `repeat(${numFilas}, 100px)`;
-    for(let i=0; i<numFilas; i++){
-        for(let j=0; j<numFilas; j++){
-            const casilla = document.createElement('div');
-            casilla.classList.add('casilla');
-            casilla.classList.add('casillaSinRevelar');
-            casilla.dataset.fila = i;
-            casilla.dataset.columna = j;
-            tablero.appendChild(casilla);
-        }
-    }
-    const script = document.getElementsByTagName('script');
-    script[0].insertAdjacentElement("beforebegin", tablero);
-}
-
 //Una función para colocar las minas en el tablero
 function colocarMinas(mapa, numBombas){
     //Hacemos una copia del mapa y definimos las variables que necesitamos
@@ -129,9 +110,9 @@ function mostrarCasillasAdyacentesVaciasONumericas(mapa, progreso, x, y){
 }
 
 //Una función para revelar una casilla
-function revelarCasilla(mapa, progreso, x, y){
-    //Hacemos una copia del progreso para trabajar en ella
-    let resultado = [].concat(progreso);
+function revelarCasilla(mapa, casilla){
+    let x = casilla.dataset.fila;
+    let y = casilla.dataset.columna;
 
     //Si la casilla a revelar es bomba, se pierde
     if(mapa[x][y] === "*"){
@@ -139,11 +120,10 @@ function revelarCasilla(mapa, progreso, x, y){
     } else if (contarMinasAdyacentes(mapa, x, y) == 0){ //Si es un 0, revelamos las adyacentes
         resultado = mostrarCasillasAdyacentesVaciasONumericas(mapa, resultado, x, y);
     } else { //Si no es 0 ni bomba, revelamos la casilla y decrementamos el contador para la victoria
-        resultado[x][y] = contarMinasAdyacentes(mapa, x, y);
+        let resultado = contarMinasAdyacentes(mapa, x, y);
+        casilla.textContent(resultado);
         casillasRestantes--; 
     }
-    //Devolvemos la copia
-    return resultado;
 }
 
 //Una función para jugar una ronda
@@ -184,6 +164,29 @@ while(isNaN(numFilas) || numFilas < 2){
     numFilas = parseInt(prompt("El número de filas del tablero debe ser mayor o igual que 1. Introdúcelo de nuevo: "));
 }
 
+
+function generarTableroHTML(){
+    const tablero = document.createElement('div');
+    tablero.classList.add('tablero');
+    tablero.style.margin = 'auto';
+    const longitud = 780/numFilas;
+    tablero.style.gridTemplateRows = `repeat(${numFilas}, ${longitud}px)`;
+    tablero.style.gridTemplateColumns = `repeat(${numFilas}, ${longitud}px)`;
+    for(let i=0; i<numFilas; i++){
+        for(let j=0; j<numFilas; j++){
+            const casilla = document.createElement('div');
+            casilla.classList.add('casilla');
+            casilla.classList.add('casillaSinRevelar');
+            casilla.dataset.fila = i;
+            casilla.dataset.columna = j;
+            tablero.appendChild(casilla);
+        }
+    }
+    const script = document.getElementsByTagName('script');
+    script[0].insertAdjacentElement("beforebegin", tablero);
+}
+
+
 //Más variables que vamos a usar
 let mapa = generarMapa(), progreso = generarMapa(), filaSeleccionada, columnaSeleccionada, casillaValida, numBombas, casillasRestantes;
 numBombas = parseInt((numFilas*numFilas)/5);
@@ -203,6 +206,12 @@ console.table(mapa);
 }*/
 
 generarTableroHTML();
+const tablero = document.getElementsByClassName('tablero');
+tablero[0].addEventListener("click", function(e){
+    casilla = e.target.closest(".casilla");
+    revelarCasilla(casilla);
+});
+
 /*
 //Mostramos el tablero final
 console.log("Estado final del tablero: ");

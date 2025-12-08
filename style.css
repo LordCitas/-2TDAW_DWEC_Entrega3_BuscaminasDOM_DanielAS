@@ -11,11 +11,11 @@ body{
 #logo{
     display: flex;
     justify-content: center;
-    padding: 30px 0px;
+    padding: 25px 0px;
 }
 
 #logo>img{
-    height: 15vh;
+    height: 150px;
     filter: drop-shadow(2px 4px 6px black);
 }
 
@@ -48,8 +48,10 @@ body{
 
 .tablero{
     display: grid;
-    grid-template-rows: repeat(3, 1fr);
-    grid-template-columns: repeat(3, 1fr);
+    width: 95%;
+    margin: auto;
+    grid-template-rows: repeat(3, 50px);
+    grid-template-columns: repeat(3, 50px);
     height: 80vh;
 }
 
