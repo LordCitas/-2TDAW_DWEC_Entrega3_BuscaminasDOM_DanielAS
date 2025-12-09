@@ -1,5 +1,6 @@
 //Definimos las variables globales que vamos a usar
-let numFilas, ronda = 0, vivo = true;
+let numFilas, ronda = 0, vivo = true, mapa, numBombas, casillasRestantes;
+const contenedorTablero = document.getElementById('tablero-visual');
 
 
 
@@ -61,8 +62,8 @@ function generarMargen(n){
 
 //Una función para contar las minas adyacentes a una casilla
 function contarMinasAdyacentes(mapa, x, y){
-    //Definimos las variables que necesitamos, y una copia del progreso (lo copio por si acaso, que no quiero más errores)
-    let resultado = [].concat(mapa), contador = 0, margenX = [], margenY = [];
+    //Definimos las variables que necesitamos
+    let contador = 0, margenX = [], margenY = [];
 
     //Generamos márgenes para fila y columna
     margenX = generarMargen(x);
@@ -71,7 +72,7 @@ function contarMinasAdyacentes(mapa, x, y){
     //Recorremos todas las posiciones y vamos contando las bombas
     for(let posX of margenX){
         for(let posY of margenY){
-            if(resultado[posX][posY] == "*" && !(posX == x && posY == y)){
+            if(mapa[posX][posY] == "*" && !(posX == x && posY == y)){
                 contador++;
             }
         }
@@ -81,18 +82,24 @@ function contarMinasAdyacentes(mapa, x, y){
 }
 
 //Una función para mostrar las casillas adyacentes vacías o numéricas
-function mostrarCasillasAdyacentesVaciasONumericas(mapa, progreso, x, y){
-    //Hacemos una copia del progreso y generamos márgenes
-    let resultado = [].concat(progreso), numero;
+function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
+    //Obtenemos las coordenadas de la casilla
+    let x = casilla.dataset.fila;
+    let y = casilla.dataset.columna;
+
+    //Generamos márgenes
     let margenX = generarMargen(x), margenY = generarMargen(y);
 
     //Como sólo entramos a la función cuando encontramos un 0, sabemos que lo primero es revelar la casilla central
-    resultado[x][y] = contarMinasAdyacentes(mapa, x, y);
+    let resultado = contarMinasAdyacentes(casilla, mapa);
+    casilla.textContent = resultado;
     casillasRestantes--;
 
     //Un bucle para comprobar las adyacentes
     for(let posX of margenX){
         for(let posY of margenY){
+            const selector =  `[data-fila="${posX}"][data-columna="${posY}"]`;
+            let casilla2 = document.querySelector(selector);
             //Entramos sólo a casillas sin revelar y que no sean bomba
             if(resultado[posX][posY] == "X" && mapa[posX][posY] != "*"){ 
                 numero = contarMinasAdyacentes(mapa, posX, posY);
@@ -105,20 +112,18 @@ function mostrarCasillasAdyacentesVaciasONumericas(mapa, progreso, x, y){
             }
         }
     }
-    //Devolvemos la copia del progreso
-    return resultado;
 }
 
 //Una función para revelar una casilla
 function revelarCasilla(mapa, casilla){
-    let x = casilla.dataset.fila;
-    let y = casilla.dataset.columna;
+    let x = parseInt(casilla.dataset.fila);
+    let y = parseInt(casilla.dataset.columna);
 
     //Si la casilla a revelar es bomba, se pierde
     if(mapa[x][y] === "*"){
         vivo = false;
     } else if (contarMinasAdyacentes(mapa, x, y) == 0){ //Si es un 0, revelamos las adyacentes
-        resultado = mostrarCasillasAdyacentesVaciasONumericas(mapa, resultado, x, y);
+        resultado = mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa);
     } else { //Si no es 0 ni bomba, revelamos la casilla y decrementamos el contador para la victoria
         let resultado = contarMinasAdyacentes(mapa, x, y);
         casilla.textContent(resultado);
@@ -188,7 +193,8 @@ function generarTableroHTML(){
 
 
 //Más variables que vamos a usar
-let mapa = generarMapa(), progreso = generarMapa(), filaSeleccionada, columnaSeleccionada, casillaValida, numBombas, casillasRestantes;
+let progreso = generarMapa();
+mapa = generarMapa();
 numBombas = parseInt((numFilas*numFilas)/5);
 casillasRestantes = numFilas * numFilas - numBombas;
 mapa = colocarMinas(mapa, numBombas);
