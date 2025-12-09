@@ -81,6 +81,81 @@ function contarMinasAdyacentes(mapa, x, y){
     return contador;
 }
 
+function generarTableroHTML(){
+    const longitud = 780/numFilas;
+    contenedorTablero.style.gridTemplateColumns = `repeat(${numFilas}, ${longitud}px)`;
+    contenedorTablero.style.gridTemplateRows = `repeat(${numFilas}, ${longitud}px)`;
+    
+    for (let i = 0; i < numFilas; i++) {
+        for (let j = 0; j < numFilas; j++) {
+            const casilla = document.createElement('div');
+            casilla.classList.add('casilla');
+            casilla.classList.add('casillaSinRevelar');
+            
+            //Usamos atributos data- para almacenar las coordenadas
+            casilla.dataset.fila = i;
+            casilla.dataset.columna = j;
+
+            //Añadimos los eventos
+            /*casilla.addEventListener('click', manejarClicIzquierdo);
+            casilla.addEventListener('contextmenu', manejarClicDerecho);
+            casilla.addEventListener('dblclick', manejarDobleClic);*/
+
+            //Insertamos la casilla
+            contenedorTablero.appendChild(casilla);
+        }
+    }
+}
+
+//Una función para obtener una casilla del DOM por coordenadas
+function obtenerCasillaDOM(fila, columna) {
+    return document.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
+}
+
+//Una función para revelar una casilla
+function revelarCasilla(x, y){
+    //Obtenemos la casilla del DOM
+    const casillaDOM = obtenerCasillaDOM(x, y);
+    
+    //Salimos si la casilla ya está revelada o tiene bandera
+    if(casillaDOM.classList.contains('revelada') || casillaDOM.classList.contains('bandera')) {
+        return; 
+    }
+
+    //Obtenemos el valor de la casilla del mapa ("X" o "*")
+    const valor = mapa[x][y];
+
+    //Si revelamos una bomba, perdemos
+    if(valor === "*"){
+        vivo = false;
+        casillaDOM.classList.add('mina');
+        casillaDOM.textContent = '💣';
+        finalizarJuego(false);
+
+        //Salimos de la función
+        return;
+    } 
+    
+    //Si no es bomba, revelamos la casilla actual
+    casillaDOM.classList.add('revelada');
+    casillasRestantes--;
+
+    if (valor > 0) {
+        // Es un número [cite: 20]
+        casillaDOM.textContent = valor;
+        casillaDOM.classList.add(`num-${valor}`);
+    } else {
+        // Es un 0 -> Llamada recursiva para expansión [cite: 22]
+        // Llama a la versión adaptada para DOM
+        mostrarCasillasAdyacentesVaciasONumericas(x, y);
+    }
+
+    // Comprobar victoria
+    if (casillasRestantes === 0) {
+        finalizarJuego(true); // Todas las casillas no-mina están descubiertas 
+    }
+}
+
 //Una función para mostrar las casillas adyacentes vacías o numéricas
 function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
     //Obtenemos las coordenadas de la casilla
@@ -114,22 +189,9 @@ function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
     }
 }
 
-//Una función para revelar una casilla
-function revelarCasilla(mapa, casilla){
-    let x = parseInt(casilla.dataset.fila);
-    let y = parseInt(casilla.dataset.columna);
 
-    //Si la casilla a revelar es bomba, se pierde
-    if(mapa[x][y] === "*"){
-        vivo = false;
-    } else if (contarMinasAdyacentes(mapa, x, y) == 0){ //Si es un 0, revelamos las adyacentes
-        resultado = mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa);
-    } else { //Si no es 0 ni bomba, revelamos la casilla y decrementamos el contador para la victoria
-        let resultado = contarMinasAdyacentes(mapa, x, y);
-        casilla.textContent(resultado);
-        casillasRestantes--; 
-    }
-}
+
+
 
 //Una función para jugar una ronda
 function jugar(){
@@ -170,26 +232,7 @@ while(isNaN(numFilas) || numFilas < 2){
 }
 
 
-function generarTableroHTML(){
-    const tablero = document.createElement('div');
-    tablero.classList.add('tablero');
-    tablero.style.margin = 'auto';
-    const longitud = 780/numFilas;
-    tablero.style.gridTemplateRows = `repeat(${numFilas}, ${longitud}px)`;
-    tablero.style.gridTemplateColumns = `repeat(${numFilas}, ${longitud}px)`;
-    for(let i=0; i<numFilas; i++){
-        for(let j=0; j<numFilas; j++){
-            const casilla = document.createElement('div');
-            casilla.classList.add('casilla');
-            casilla.classList.add('casillaSinRevelar');
-            casilla.dataset.fila = i;
-            casilla.dataset.columna = j;
-            tablero.appendChild(casilla);
-        }
-    }
-    const script = document.getElementsByTagName('script');
-    script[0].insertAdjacentElement("beforebegin", tablero);
-}
+
 
 
 //Más variables que vamos a usar

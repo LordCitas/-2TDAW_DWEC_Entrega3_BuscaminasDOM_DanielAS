@@ -46,7 +46,7 @@ body{
     padding: 0px 8px;
 }
 
-.tablero{
+#tablero-visual{
     display: grid;
     width: 95%;
     margin: 0 auto;
@@ -57,10 +57,9 @@ body{
 
 .casilla{
     background-size: cover;
+    border: solid 3px rgba(255, 255, 255, 0.103);
 }
 
 .casillaSinRevelar{
     background-image: url("./img/7.webp");
-    border: solid 3px rgba(255, 255, 255, 0.103);
-
 }
