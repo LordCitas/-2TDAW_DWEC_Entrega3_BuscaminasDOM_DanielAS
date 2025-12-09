@@ -1,3 +1,9 @@
+*{
+    margin: 0;
+    padding: 0;
+    display: inline-block;
+}
+
 body{
     background-image: url("./img/fondo.png");
     background-position: center top;
@@ -6,6 +12,15 @@ body{
     background-position: fixed;
     height: 100vh;
     color: white;
+    display: flex;
+}
+
+#izquierda{
+    height: 100%;
+    width: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 #logo{
@@ -19,36 +34,9 @@ body{
     filter: drop-shadow(2px 4px 6px black);
 }
 
-#barraDeDatos{
-    width: 90%;
-    height: 50px;
-    margin: auto;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    background-color: rgba(0, 0, 0, 0.349);
-    display: hidden;
-}
-
-#barraDeDatos>{
-    width: 30%;
-}
-
-#dificultades{
-    display: flex;
-    align-items: center;
-}
-
-.circulo>img{
-    width: 40px;
-    height: 40px;
-    border-radius: 50%;
-    padding: 0px 8px;
-}
-
 #tablero-visual{
     display: grid;
-    width: 95%;
+    width: 100%;
     margin: 0 auto;
     grid-template-rows: repeat(3, 50px);
     grid-template-columns: repeat(3, 50px);

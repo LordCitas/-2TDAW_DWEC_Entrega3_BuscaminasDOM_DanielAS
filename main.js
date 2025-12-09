@@ -112,6 +112,47 @@ function obtenerCasillaDOM(fila, columna) {
     return document.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
 }
 
+// Lógica de click izquierdo (Descubrir)
+function manejarClicIzquierdo(e) {
+    if (!vivo) return;
+    const casilla = e.currentTarget;
+    const x = parseInt(casilla.dataset.fila);
+    const y = parseInt(casilla.dataset.columna);
+
+    // No se puede descubrir si ya está revelada o tiene bandera 
+    if (casilla.classList.contains('revelada') || casilla.classList.contains('bandera')) {
+        return;
+    }
+
+    revelarCasilla(x, y);
+}
+
+// Lógica de click derecho (Bandera)
+function manejarClicDerecho(e) {
+    e.preventDefault(); // Evitar el menú contextual del navegador [cite: 34]
+    if (!vivo) return;
+
+    const casilla = e.currentTarget;
+
+    // Solo podemos marcar/desmarcar si no está revelada
+    if (!casilla.classList.contains('revelada')) {
+        casilla.classList.toggle('bandera');
+        casilla.textContent = casilla.classList.contains('bandera') ? '🚩' : ''; // Emoji de bandera
+    }
+}
+
+// Lógica de doble click (Quitar Bandera)
+function manejarDobleClic(e) {
+    if (!vivo) return;
+    const casilla = e.currentTarget;
+    
+    // Solo si tiene bandera, se quita (ya cubierta por toggle, pero se asegura) [cite: 29]
+    if (casilla.classList.contains('bandera')) {
+        casilla.classList.remove('bandera');
+        casilla.textContent = '';
+    }
+}
+
 //Una función para revelar una casilla
 function revelarCasilla(x, y){
     //Obtenemos la casilla del DOM
@@ -157,11 +198,7 @@ function revelarCasilla(x, y){
 }
 
 //Una función para mostrar las casillas adyacentes vacías o numéricas
-function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
-    //Obtenemos las coordenadas de la casilla
-    let x = casilla.dataset.fila;
-    let y = casilla.dataset.columna;
-
+function mostrarCasillasAdyacentesVaciasONumericas(x, y){
     //Generamos márgenes
     let margenX = generarMargen(x), margenY = generarMargen(y);
 
@@ -173,7 +210,7 @@ function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
     //Un bucle para comprobar las adyacentes
     for(let posX of margenX){
         for(let posY of margenY){
-            const selector =  `[data-fila="${posX}"][data-columna="${posY}"]`;
+            /*const selector =  `[data-fila="${posX}"][data-columna="${posY}"]`;
             let casilla2 = document.querySelector(selector);
             //Entramos sólo a casillas sin revelar y que no sean bomba
             if(resultado[posX][posY] == "X" && mapa[posX][posY] != "*"){ 
@@ -184,6 +221,29 @@ function mostrarCasillasAdyacentesVaciasONumericas(casilla, mapa){
                     resultado[posX][posY] = numero;
                     casillasRestantes--;
                 }
+            }*/
+
+            //Saltamos la iteración cuando entramos a la casilla central
+            if(posX == x && posY == y){
+                continue;
+            }
+
+            const casillaAdy = obtenerCasillaDOM(posX, posY);
+            // Solo trabajamos con casillas que no estén reveladas ni tengan bandera
+            if(!casillaAdyacente.classList.contains('revelada') && !casillaAdyacente.classList.contains('bandera')){
+                
+                const valorAdyacente = mapa[posX][posY];
+
+                if(valorAdyacente === 0){
+                    //Recursividad para el 0
+                    revelarCasilla(nuevaFila, nuevaColumna); 
+                }else if(valorAdyacente > 0){ 
+                    //Si es numérica, la revelamos y terminamos la cadena por aquí
+                    casillaAdyacente.classList.add('revelada', `num-${valorAdyacente}`);
+                    casillaAdyacente.textContent = valorAdyacente;
+                    casillasRestantes--;
+                }
+                // Si fuera una mina, ya se descartó en la función principal
             }
         }
     }
@@ -255,11 +315,12 @@ console.table(mapa);
 }*/
 
 generarTableroHTML();
-const tablero = document.getElementsByClassName('tablero');
-tablero[0].addEventListener("click", function(e){
+const tablero = document.getElementById('tablero-visual');
+/*tablero.addEventListener("click", function(e){
     casilla = e.target.closest(".casilla");
+    const 
     revelarCasilla(casilla);
-});
+});*/
 
 /*
 //Mostramos el tablero final
