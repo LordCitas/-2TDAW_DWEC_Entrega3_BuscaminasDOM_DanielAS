@@ -70,10 +70,6 @@ body{
     align-items: center;
 }
 
-.casillaSinRevelar{
-    background-image: url("./img/7.webp");
-}
-
 .bandera{
     background-color: #f7a6a6; /* Color para las marcadas */
     font-size: 1.2rem;
@@ -82,4 +78,44 @@ body{
 .revelada{
     background-color: #e3e6fa;
     cursor: default;
+}
+
+.sinRevelar{
+    background-image: url("./img/sinRevelar.png");
+}
+
+.fondo0{
+    background-image: url("./img/fondo0.webp");
+}
+
+.fondo1{
+    background-image: url("./img/fondo1.jpg");
+}
+
+.fondo2{
+    background-image: url("./img/fondo2.jpg");
+}
+
+.fondo3{
+    background-image: url("./img/fondo3.webp");
+}
+
+.fondo4{
+    background-image: url("./img/fondo4.webp");
+}
+
+.fondo5{
+    background-image: url("./img/fondo5.webp");
+}
+
+.fondo6{
+    background-image: url("./img/fondo6.webp");
+}
+
+.fondo7{
+    background-image: url("./img/fondo7.webp");
+}
+
+.fondo8{
+    background-image: url("./img/fondo8.webp");
 }

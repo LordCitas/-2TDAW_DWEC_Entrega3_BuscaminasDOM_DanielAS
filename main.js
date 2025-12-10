@@ -4,8 +4,17 @@ const contenedorTablero = document.getElementById('tablero-visual');
 const mensajeJuego = document.getElementById('mensaje-juego');
 const inputTamano = document.getElementById('input-tamano');
 const btnIniciar = document.getElementById('btn-iniciar');
-
-
+const numeros = {
+    "0" : "fondo0",
+    "1" : "fondo1",
+    "2" : "fondo2",
+    "3" : "fondo3",
+    "4" : "fondo4",
+    "5" : "fondo5",
+    "6" : "fondo6",
+    "7" : "fondo7",
+    "8" : "fondo8",
+}
 
 //Una función para generar el tablero inicial
 function generarMapa(){
@@ -97,13 +106,13 @@ function inicializarJuego(){
     contenedorTablero.innerHTML = '';
     contenedorTablero.classList.remove('bloqueado');
     
-    //Generamos el mapa y le colocamos las minas
-    mapa = generarMapa();
-    mapa = colocarMinas(mapa, numBombas);
-
     //Inicializamos las variables de control del juego
     numBombas = parseInt((numFilas * numFilas) / 5);
     casillasRestantes = numFilas * numFilas - numBombas;
+
+    //Generamos el mapa y le colocamos las minas
+    mapa = generarMapa();
+    mapa = colocarMinas(mapa, numBombas);
     
     //Rellenamos las casillas sin minas con el número de minas adyacentes
     for (let i = 0; i < numFilas; i++) {
@@ -129,7 +138,7 @@ function generarTableroHTML(){
         for (let j = 0; j < numFilas; j++) {
             const casilla = document.createElement('div');
             casilla.classList.add('casilla');
-            casilla.classList.add('casillaSinRevelar');
+            casilla.classList.add('sinRevelar');
             
             //Usamos atributos data- para almacenar las coordenadas
             casilla.dataset.fila = i;
@@ -228,16 +237,40 @@ function revelarCasilla(x, y){
     } 
     
     //Si no es bomba, revelamos la casilla actual
+    casillaDOM.classList.remove('sinRevelar');
     casillaDOM.classList.add('revelada');
     casillasRestantes--;
 
-    if (valor > 0) {
-        // Es un número [cite: 20]
+    casillaDOM.classList.add(`${numeros[valor]}`);
+
+    /*switch(valor){
+        case 0:
+            casillaDOM.classList.add(`${numeros[valor]}`);
+            break;
+        case 1:
+            break;
+        case 2:
+            break;
+        case 3:
+            break;
+        case 4:
+            break;
+        case 5:
+            break;
+        case 6:
+            break;
+        case 7:
+            break;
+        case 8:
+            break;
+    }*/
+
+    if(valor > 0){
+        //Si es un número
         casillaDOM.textContent = valor;
-        casillaDOM.classList.add(`num-${valor}`);
-    } else {
-        // Es un 0 -> Llamada recursiva para expansión [cite: 22]
-        // Llama a la versión adaptada para DOM
+    }else{
+        //Es un 0 -> Llamada recursiva para expansión
+        //Llama a la versión adaptada para DOM
         mostrarCasillasAdyacentesVaciasONumericas(x, y);
     }
 
@@ -288,15 +321,19 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
             if(!casillaAdyacente.classList.contains('revelada') && !casillaAdyacente.classList.contains('bandera')){
                 
                 const valorAdyacente = mapa[posX][posY];
+                
 
                 if(valorAdyacente === 0){
                     //Recursividad para el 0
                     revelarCasilla(posX, posY); 
                 }else if(valorAdyacente > 0){ 
                     //Si es numérica, la revelamos y terminamos la cadena por aquí
-                    casillaAdyacente.classList.add('revelada', `num-${valorAdyacente}`);
+                    casillaAdyacente.classList.add('revelada');
                     casillaAdyacente.textContent = valorAdyacente;
                     casillasRestantes--;
+
+                    casillaAdyacente.classList.remove('sinRevelar');
+                    casillaAdyacente.classList.add(`${numeros[valorAdyacente]}`);
                 }
                 //Si fuera una mina, ya se descartó en la función principal
             }
@@ -314,7 +351,7 @@ while(isNaN(numFilas) || numFilas < 2){
 
 
 
-
+/*
 //Más variables que vamos a usar
 let progreso = generarMapa();
 mapa = generarMapa();
@@ -322,7 +359,7 @@ numBombas = parseInt((numFilas*numFilas)/5);
 casillasRestantes = numFilas * numFilas - numBombas;
 mapa = colocarMinas(mapa, numBombas);
 console.log("El mapa de minas es:");
-console.table(mapa);
+console.table(mapa);*/
 
 //Mientras no hayamos revelado una bomba, seguimos jugando
 /*while(vivo){
