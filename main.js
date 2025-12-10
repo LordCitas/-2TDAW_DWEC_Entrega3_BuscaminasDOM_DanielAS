@@ -151,15 +151,19 @@ function generarTableroHTML(){
 
     contenedorTablero.addEventListener("click", function(e){
         if(e.target.classList.contains('casilla')){
-            /*e.target.textContent = "B";*/
             manejarClicIzquierdo(e);
         }
     });
 
     contenedorTablero.addEventListener("contextmenu", function(e){
         if(e.target.classList.contains('casilla')){
-            /*e.target.textContent = "B";*/
             manejarClicDerecho(e);
+        }
+    });
+
+    contenedorTablero.addEventListener("dblclick", function(e){
+        if(e.target.classList.contains('casilla')){
+            manejarDobleClic(e);
         }
     });
 }
@@ -169,7 +173,7 @@ function obtenerCasillaDOM(fila, columna) {
     return document.querySelector(`[data-fila="${fila}"][data-columna="${columna}"]`);
 }
 
-// Lógica de click izquierdo (Descubrir)
+//Una función para controlar el clic izquierdo para revelar casillas
 function manejarClicIzquierdo(e) {
     if(!vivo){
         return;
@@ -188,7 +192,7 @@ function manejarClicIzquierdo(e) {
     revelarCasilla(x, y);
 }
 
-// Lógica de click derecho (Bandera)
+//Una función para controlar el clic derecho para poner y quitar "banderas"
 function manejarClicDerecho(e) {
     e.preventDefault(); //Evitamos el menú contextual del navegador
     if(!vivo){
@@ -203,16 +207,34 @@ function manejarClicDerecho(e) {
     }
 }
 
-// Lógica de doble click (Quitar Bandera)
+//Una función para controlar el doble clic izquierdo para revelar casillas adyacentes
+//cuando ya hayamos marcado las suficientes "banderas"
 function manejarDobleClic(e) {
-    if (!vivo) return;
+    if(!vivo){
+        return;
+    }
     const casilla = e.currentTarget;
     
-    // Solo si tiene bandera, se quita (ya cubierta por toggle, pero se asegura) [cite: 29]
-    if (casilla.classList.contains('bandera')) {
-        casilla.classList.remove('bandera');
-        casilla.textContent = '';
+    let x = parseInt(casilla.dataset.fila);
+    let y = parseInt(casilla.dataset.columna);
+
+    let margenX = generarMargen(x), margenY = generarMargen(y), contador = 0;
+
+    for(let posX of margenX){
+        for(let posY of margenY){
+            if(!(posX == x && posY == y) && mapa[posX][posY] == "*"){
+                contador++;
+            }
+        }
     }
+
+    //Si contamos un número de "banderas" distinto al de bombas adyacentes, no hacemos nada y salimos
+    if(!mapa[x][y] == contador){
+        return;
+    }
+
+    //En caso contrario, revelamos las casillas adyacentes
+    mostrarCasillasAdyacentesVaciasONumericas(x, y);
 }
 
 //Una función para revelar una casilla
