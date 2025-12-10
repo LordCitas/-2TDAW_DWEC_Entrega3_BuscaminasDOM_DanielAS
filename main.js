@@ -164,14 +164,15 @@ function manejarClicIzquierdo(e) {
         return;
     }
 
-    const casilla = e.currentTarget;
-    const x = parseInt(casilla.dataset.fila);
-    const y = parseInt(casilla.dataset.columna);
+    const casilla = e.target;
 
     // No se puede descubrir si ya está revelada o tiene bandera 
     if (casilla.classList.contains('revelada') || casilla.classList.contains('bandera')) {
         return;
     }
+
+    const x = parseInt(casilla.dataset.fila);
+    const y = parseInt(casilla.dataset.columna);
 
     revelarCasilla(x, y);
 }
@@ -250,11 +251,11 @@ function revelarCasilla(x, y){
 function mostrarCasillasAdyacentesVaciasONumericas(x, y){
     //Generamos márgenes
     let margenX = generarMargen(x), margenY = generarMargen(y);
-
+    /*
     //Como sólo entramos a la función cuando encontramos un 0, sabemos que lo primero es revelar la casilla central
     let resultado = contarMinasAdyacentes(casilla, mapa);
     casilla.textContent = resultado;
-    casillasRestantes--;
+    casillasRestantes--;*/
 
     //Un bucle para comprobar las adyacentes
     for(let posX of margenX){
@@ -278,7 +279,12 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
             }
 
             const casillaAdyacente = obtenerCasillaDOM(posX, posY);
-            // Solo trabajamos con casillas que no estén reveladas ni tengan bandera
+
+            if (!casillaAdyacente) {
+                continue;
+            }
+
+            //Solo trabajamos con casillas que no estén reveladas ni tengan bandera
             if(!casillaAdyacente.classList.contains('revelada') && !casillaAdyacente.classList.contains('bandera')){
                 
                 const valorAdyacente = mapa[posX][posY];
@@ -292,7 +298,7 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
                     casillaAdyacente.textContent = valorAdyacente;
                     casillasRestantes--;
                 }
-                // Si fuera una mina, ya se descartó en la función principal
+                //Si fuera una mina, ya se descartó en la función principal
             }
         }
     }
