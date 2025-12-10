@@ -29,7 +29,7 @@ body{
 
 #derecha{
     /*Regula la altura si se queda corta*/
-    height: 40%;
+    height: 60%;
     width: 35%;
     margin: auto auto;
     display: flex;
@@ -57,14 +57,30 @@ body{
     margin: 0 auto;
     grid-template-rows: repeat(3, 50px);
     grid-template-columns: repeat(3, 50px);
-    filter: drop-shadow(4px 4px 10px black);
     font-size: 12rem;
     font-weight: bold;
     padding: 20px;
-    background: rgba(0, 0, 0, 0.479);
+    /*
+    filter: drop-shadow(4px 4px 10px black);
+    background: rgba(0, 0, 0, 0.479);*/
     height: 850px;
     width: 850px;
     border-radius: 15px;
+}
+
+.sombraNegra{
+    background: rgba(0, 0, 0, 0.479);
+    filter: drop-shadow(4px 4px 10px black);
+}
+
+.sombraRoja{
+    background: rgba(255, 0, 0, 0.479);
+    filter: drop-shadow(4px 4px 10px rgb(255, 0, 0));
+}
+
+.sombraVerde{
+    background: rgba(0, 255, 13, 0.479);
+    filter: drop-shadow(4px 4px 10px rgb(0, 255, 13));
 }
 
 #input-tamano{
@@ -85,6 +101,11 @@ body{
     font-weight: bolder;
     font-size: 1.5rem;
     margin-left: 20px;
+}
+
+#info-container>p{
+    color: white;
+    font-size: 1.5rem;
 }
 
 .casilla{
@@ -115,7 +136,6 @@ body{
 
 .fondo1{
     background-image: url("./img/fondo1.jpg");
-    color: black;
 }
 
 .fondo2{
@@ -128,17 +148,14 @@ body{
 
 .fondo4{
     background-image: url("./img/fondo4.webp");
-    color: black;
 }
 
 .fondo5{
     background-image: url("./img/fondo5.webp");
-    color: black;
 }
 
 .fondo6{
     background-image: url("./img/fondo6.webp");
-    color: black;
 }
 
 .fondo7{

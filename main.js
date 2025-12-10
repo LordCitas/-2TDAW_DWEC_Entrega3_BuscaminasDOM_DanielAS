@@ -133,6 +133,11 @@ function generarTableroHTML(){
     contenedorTablero.style.gridTemplateColumns = `repeat(${numFilas}, ${longitud}px)`;
     contenedorTablero.style.gridTemplateRows = `repeat(${numFilas}, ${longitud}px)`;
     contenedorTablero.style.fontSize = `${(1/2)*longitud}px`;
+
+    contenedorTablero.classList.add("sombraNegra");
+    contenedorTablero.classList.remove("sombraRoja");
+    contenedorTablero.classList.remove("sombraVerde");
+    mensajeJuego.setAttribute("style", "color:yellow");
     
     for (let i = 0; i < numFilas; i++) {
         for (let j = 0; j < numFilas; j++) {
@@ -155,6 +160,7 @@ function generarTableroHTML(){
         }
     });
 
+    //No sé por qué, peor al resetear el tablero me deja de funcionar el listener
     contenedorTablero.addEventListener("contextmenu", function(e){
         if(e.target.classList.contains('casilla')){
             manejarClicDerecho(e);
@@ -261,6 +267,8 @@ function revelarCasilla(x, y){
     //Si revelamos una bomba, perdemos
     if(valor === "*"){
         vivo = false;
+        contenedorTablero.classList.add("sombraRoja");
+        contenedorTablero.classList.remove("sombraNegra");
         casillaDOM.classList.add('mina');
         casillaDOM.classList.toggle('mina');
         finalizarJuego(false);
@@ -350,9 +358,13 @@ function finalizarJuego(victoria) {
     }
 
     if(victoria){
+        contenedorTablero.classList.remove("sombraNegra");
+        contenedorTablero.classList.add("sombraVerde");
         mensajeJuego.textContent = "¡Enhorabuena, has ganado!";
+        mensajeJuego.setAttribute("style", "color:lime");
     }else{
         mensajeJuego.textContent = "¡BOOM! Has perdido. Mejor suerte la próxima vez.";
+        mensajeJuego.setAttribute("style", "color:red");
     }
 }
 
