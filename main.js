@@ -160,6 +160,13 @@ function generarTableroHTML(){
             manejarClicIzquierdo(e);
         }
     });
+
+    contenedorTablero.addEventListener("contextmenu", function(e){
+        if(e.target.classList.contains('casilla')){
+            /*e.target.textContent = "B";*/
+            manejarClicDerecho(e);
+        }
+    });
 }
 
 //Una función para obtener una casilla del DOM por coordenadas
@@ -188,8 +195,10 @@ function manejarClicIzquierdo(e) {
 
 // Lógica de click derecho (Bandera)
 function manejarClicDerecho(e) {
-    e.preventDefault(); // Evitar el menú contextual del navegador [cite: 34]
-    if (!vivo) return;
+    e.preventDefault(); //Evitamos el menú contextual del navegador
+    if(!vivo){
+        return;
+    }
 
     const casilla = e.currentTarget;
 
