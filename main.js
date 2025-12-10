@@ -1,6 +1,9 @@
 //Definimos las variables globales que vamos a usar
 let numFilas, ronda = 0, vivo = true, mapa, numBombas, casillasRestantes;
 const contenedorTablero = document.getElementById('tablero-visual');
+const mensajeJuego = document.getElementById('mensaje-juego');
+const inputTamano = document.getElementById('input-tamano');
+const btnIniciar = document.getElementById('btn-iniciar');
 
 
 
@@ -81,10 +84,46 @@ function contarMinasAdyacentes(mapa, x, y){
     return contador;
 }
 
+//Una función para inicializar el juego
+function inicializarJuego(){
+    numFilas = parseInt(inputTamano.value);
+    if (isNaN(numFilas) || numFilas < 2){
+        alert("El tamaño del tablero debe ser un número mayor o igual a 2.");
+        return;
+    }
+
+    //Reiniciamos las variables
+    vivo = true;
+    contenedorTablero.innerHTML = '';
+    contenedorTablero.classList.remove('bloqueado');
+    
+    //Generamos el mapa y le colocamos las minas
+    mapa = generarMapa();
+    mapa = colocarMinas(mapa, numBombas);
+
+    //Inicializamos las variables de control del juego
+    numBombas = parseInt((numFilas * numFilas) / 5);
+    casillasRestantes = numFilas * numFilas - numBombas;
+    
+    //Rellenamos las casillas sin minas con el número de minas adyacentes
+    for (let i = 0; i < numFilas; i++) {
+        for (let j = 0; j < numFilas; j++) {
+            if (mapa[i][j] === "X") {
+                mapa[i][j] = contarMinasAdyacentes(mapa, i, j);
+            }
+        }
+    }
+    
+    //Generamos el tablero en el DOM
+    generarTableroHTML();
+    mensajeJuego.textContent = '¡Comienza la partida!';
+}
+
 function generarTableroHTML(){
-    const longitud = 780/numFilas;
+    const longitud = 850/numFilas;
     contenedorTablero.style.gridTemplateColumns = `repeat(${numFilas}, ${longitud}px)`;
     contenedorTablero.style.gridTemplateRows = `repeat(${numFilas}, ${longitud}px)`;
+    contenedorTablero.style.fontSize = `${(1/2)*longitud}px`;
     
     for (let i = 0; i < numFilas; i++) {
         for (let j = 0; j < numFilas; j++) {
@@ -105,6 +144,13 @@ function generarTableroHTML(){
             contenedorTablero.appendChild(casilla);
         }
     }
+
+    contenedorTablero.addEventListener("click", function(e){
+        if(e.target.classList.contains('casilla')){
+            /*e.target.textContent = "B";*/
+            manejarClicIzquierdo(e);
+        }
+    });
 }
 
 //Una función para obtener una casilla del DOM por coordenadas
@@ -114,7 +160,10 @@ function obtenerCasillaDOM(fila, columna) {
 
 // Lógica de click izquierdo (Descubrir)
 function manejarClicIzquierdo(e) {
-    if (!vivo) return;
+    if(!vivo){
+        return;
+    }
+
     const casilla = e.currentTarget;
     const x = parseInt(casilla.dataset.fila);
     const y = parseInt(casilla.dataset.columna);
@@ -156,7 +205,7 @@ function manejarDobleClic(e) {
 //Una función para revelar una casilla
 function revelarCasilla(x, y){
     //Obtenemos la casilla del DOM
-    const casillaDOM = obtenerCasillaDOM(x, y);
+    let casillaDOM = obtenerCasillaDOM(x, y);
     
     //Salimos si la casilla ya está revelada o tiene bandera
     if(casillaDOM.classList.contains('revelada') || casillaDOM.classList.contains('bandera')) {
@@ -249,47 +298,12 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
     }
 }
 
-
-
-
-
-//Una función para jugar una ronda
-function jugar(){
-    //Mostramos el progreso
-    console.log("Estás en la ronda " + (++ronda) + ":");
-    console.table(progreso);
-
-    //Repetimos las peticiones hasta que sean válidas
-    do{
-        //Inicializamos la booleana para controlar que la casilla elegida es válida
-        casillaValida = true;
-
-        //Pedimos las coordenadas de la casilla a revelar, y repetimos en caso de que no sean válidas
-        filaSeleccionada = parseInt(prompt("Introduce la fila que quieres descubrir (0 a " + (numFilas-1) + "): "));
-        while(isNaN(filaSeleccionada) || filaSeleccionada < 0 || filaSeleccionada >= numFilas){
-            filaSeleccionada = parseInt(prompt("El número de fila debe estar entre 0 y " + (numFilas-1) + ". Introdúcelo de nuevo: "));
-        }  
-        columnaSeleccionada = parseInt(prompt("Introduce la columna que quieres descubrir (0 a " + (numFilas-1) + "): "));
-        while(isNaN(columnaSeleccionada) || columnaSeleccionada < 0 || columnaSeleccionada >= numFilas){
-            columnaSeleccionada = parseInt(prompt("El número de columna debe estar entre 0 y " + (numFilas-1) + ". Introdúcelo de nuevo: "));
-        }
-
-        //Si la casilla válida ya la hemos revelado, repetimos todo el proceso
-        if(progreso[filaSeleccionada][columnaSeleccionada] != "X"){
-            console.log("La casilla seleccionada ya ha sido descubierta. Selecciona otra.");
-            casillaValida = false;
-        }
-    } while (!casillaValida);
-
-    //Una vez hayamos recibido una casilla válida, la revelamos
-    progreso = revelarCasilla(mapa, progreso, filaSeleccionada, columnaSeleccionada);
-}
-
+/*
 //Pedimos el tamaño del tablero al usuario
 numFilas = parseInt(prompt("Introduce el número de filas del tablero (mínimo 2) (colocaremos un número de bombas igual al 20% del número de casillas): "));
 while(isNaN(numFilas) || numFilas < 2){
     numFilas = parseInt(prompt("El número de filas del tablero debe ser mayor o igual que 1. Introdúcelo de nuevo: "));
-}
+}*/
 
 
 
@@ -314,7 +328,8 @@ console.table(mapa);
     }
 }*/
 
-generarTableroHTML();
+//En lugar de usar prompt, usamos el formulario de inicio
+btnIniciar.addEventListener('click', inicializarJuego);
 const tablero = document.getElementById('tablero-visual');
 /*tablero.addEventListener("click", function(e){
     casilla = e.target.closest(".casilla");

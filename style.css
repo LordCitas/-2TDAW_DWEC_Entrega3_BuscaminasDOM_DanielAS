@@ -1,4 +1,4 @@
-*{
+body>*{
     margin: 0;
     padding: 0;
     display: inline-block;
@@ -13,6 +13,7 @@ body{
     height: 100vh;
     color: white;
     display: flex;
+    overflow: hidden;
 }
 
 #izquierda{
@@ -23,6 +24,19 @@ body{
     align-items: center;
 }
 
+#derecha{
+    /*Regula la altura si se queda corta*/
+    height: 40%;
+    width: 35%;
+    margin: auto auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: center;
+    background-color: rgba(0, 0, 0, 0.479);
+    border-radius: 15px;
+}
+
 #logo{
     display: flex;
     justify-content: center;
@@ -30,24 +44,42 @@ body{
 }
 
 #logo>img{
-    height: 150px;
+    height: 200px;
     filter: drop-shadow(2px 4px 6px black);
 }
 
 #tablero-visual{
     display: grid;
-    width: 100%;
     margin: 0 auto;
     grid-template-rows: repeat(3, 50px);
     grid-template-columns: repeat(3, 50px);
-    height: 80vh;
+    filter: drop-shadow(4px 4px 10px black);
+    font-size: 12rem;
+    padding: 20px;
+    background: rgba(0, 0, 0, 0.479);
+    height: 850px;
+    width: 850px;
+    border-radius: 15px;
 }
 
 .casilla{
     background-size: cover;
     border: solid 3px rgba(255, 255, 255, 0.103);
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
 .casillaSinRevelar{
     background-image: url("./img/7.webp");
+}
+
+.bandera{
+    background-color: #f7a6a6; /* Color para las marcadas */
+    font-size: 1.2rem;
+}
+
+.revelada{
+    background-color: #e3e6fa;
+    cursor: default;
 }
