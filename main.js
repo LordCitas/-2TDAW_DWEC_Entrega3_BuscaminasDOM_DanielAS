@@ -213,7 +213,7 @@ function manejarDobleClic(e) {
     if(!vivo){
         return;
     }
-    const casilla = e.currentTarget;
+    const casilla = e.target;
     
     let x = parseInt(casilla.dataset.fila);
     let y = parseInt(casilla.dataset.columna);
@@ -234,7 +234,15 @@ function manejarDobleClic(e) {
     }
 
     //En caso contrario, revelamos las casillas adyacentes
-    mostrarCasillasAdyacentesVaciasONumericas(x, y);
+    //No podemos usar el mostrarCasillas...Numericas porque no revela bombas si nos equivocamos
+    for(let posX of margenX){
+        for(let posY of margenY){
+            const nuevaCasilla = obtenerCasillaDOM(posX, posY);
+            if(!(posX == x && posY == y) && !nuevaCasilla.classList.contains("bandera") && !nuevaCasilla.classList.contains("revelado")){
+                const nuevaCasilla = revelarCasilla(posX, posY);
+            }
+        }
+    }
 }
 
 //Una función para revelar una casilla
