@@ -277,7 +277,7 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
                 continue;
             }
 
-            const casillaAdy = obtenerCasillaDOM(posX, posY);
+            const casillaAdyacente = obtenerCasillaDOM(posX, posY);
             // Solo trabajamos con casillas que no estén reveladas ni tengan bandera
             if(!casillaAdyacente.classList.contains('revelada') && !casillaAdyacente.classList.contains('bandera')){
                 
@@ -285,7 +285,7 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
 
                 if(valorAdyacente === 0){
                     //Recursividad para el 0
-                    revelarCasilla(nuevaFila, nuevaColumna); 
+                    revelarCasilla(posX, posY); 
                 }else if(valorAdyacente > 0){ 
                     //Si es numérica, la revelamos y terminamos la cadena por aquí
                     casillaAdyacente.classList.add('revelada', `num-${valorAdyacente}`);
