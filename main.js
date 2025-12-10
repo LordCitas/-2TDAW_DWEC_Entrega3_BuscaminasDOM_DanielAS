@@ -1,4 +1,4 @@
-//Definimos las variables globales que vamos a usar
+//Definimos las variables que vamos a usar
 let numFilas, ronda = 0, vivo = true, mapa, numBombas, casillasRestantes;
 const contenedorTablero = document.getElementById('tablero-visual');
 const mensajeJuego = document.getElementById('mensaje-juego');
@@ -144,11 +144,6 @@ function generarTableroHTML(){
             casilla.dataset.fila = i;
             casilla.dataset.columna = j;
 
-            //Añadimos los eventos
-            /*casilla.addEventListener('click', manejarClicIzquierdo);
-            casilla.addEventListener('contextmenu', manejarClicDerecho);
-            casilla.addEventListener('dblclick', manejarDobleClic);*/
-
             //Insertamos la casilla
             contenedorTablero.appendChild(casilla);
         }
@@ -200,12 +195,11 @@ function manejarClicDerecho(e) {
         return;
     }
 
-    const casilla = e.currentTarget;
+    const casilla = e.target;
 
     // Solo podemos marcar/desmarcar si no está revelada
     if (!casilla.classList.contains('revelada')) {
         casilla.classList.toggle('bandera');
-        casilla.textContent = casilla.classList.contains('bandera') ? '🚩' : ''; // Emoji de bandera
     }
 }
 
@@ -238,7 +232,7 @@ function revelarCasilla(x, y){
     if(valor === "*"){
         vivo = false;
         casillaDOM.classList.add('mina');
-        casillaDOM.textContent = '💣';
+        casillaDOM.classList.toggle('mina');
         finalizarJuego(false);
 
         //Salimos de la función
@@ -251,28 +245,6 @@ function revelarCasilla(x, y){
     casillasRestantes--;
 
     casillaDOM.classList.add(`${numeros[valor]}`);
-
-    /*switch(valor){
-        case 0:
-            casillaDOM.classList.add(`${numeros[valor]}`);
-            break;
-        case 1:
-            break;
-        case 2:
-            break;
-        case 3:
-            break;
-        case 4:
-            break;
-        case 5:
-            break;
-        case 6:
-            break;
-        case 7:
-            break;
-        case 8:
-            break;
-    }*/
 
     if(valor > 0){
         //Si es un número
@@ -293,27 +265,10 @@ function revelarCasilla(x, y){
 function mostrarCasillasAdyacentesVaciasONumericas(x, y){
     //Generamos márgenes
     let margenX = generarMargen(x), margenY = generarMargen(y);
-    /*
-    //Como sólo entramos a la función cuando encontramos un 0, sabemos que lo primero es revelar la casilla central
-    let resultado = contarMinasAdyacentes(casilla, mapa);
-    casilla.textContent = resultado;
-    casillasRestantes--;*/
 
     //Un bucle para comprobar las adyacentes
     for(let posX of margenX){
         for(let posY of margenY){
-            /*const selector =  `[data-fila="${posX}"][data-columna="${posY}"]`;
-            let casilla2 = document.querySelector(selector);
-            //Entramos sólo a casillas sin revelar y que no sean bomba
-            if(resultado[posX][posY] == "X" && mapa[posX][posY] != "*"){ 
-                numero = contarMinasAdyacentes(mapa, posX, posY);
-                if(numero === 0){ //Llamamos recursivamente a la función si encontramos casillas sin revelar que sean 0
-                    resultado = mostrarCasillasAdyacentesVaciasONumericas(mapa, resultado, posX, posY);
-                } else { //Si no son 0 ni están reveladas, las revelamos y decrementamos el contador para victoria
-                    resultado[posX][posY] = numero;
-                    casillasRestantes--;
-                }
-            }*/
 
             //Saltamos la iteración cuando entramos a la casilla central
             if(posX == x && posY == y){
@@ -350,53 +305,27 @@ function mostrarCasillasAdyacentesVaciasONumericas(x, y){
     }
 }
 
-/*
-//Pedimos el tamaño del tablero al usuario
-numFilas = parseInt(prompt("Introduce el número de filas del tablero (mínimo 2) (colocaremos un número de bombas igual al 20% del número de casillas): "));
-while(isNaN(numFilas) || numFilas < 2){
-    numFilas = parseInt(prompt("El número de filas del tablero debe ser mayor o igual que 1. Introdúcelo de nuevo: "));
-}*/
-
-
-
-
-/*
-//Más variables que vamos a usar
-let progreso = generarMapa();
-mapa = generarMapa();
-numBombas = parseInt((numFilas*numFilas)/5);
-casillasRestantes = numFilas * numFilas - numBombas;
-mapa = colocarMinas(mapa, numBombas);
-console.log("El mapa de minas es:");
-console.table(mapa);*/
-
-//Mientras no hayamos revelado una bomba, seguimos jugando
-/*while(vivo){
-    jugar();
-
-    //Si ya no quedan más casillas por revelar, se termina la partida
-    if(casillasRestantes === 0){
-        break;
+//Una función para terminar la partida
+function finalizarJuego(victoria) {
+    contenedorTablero.classList.add('bloqueado');
+    
+    //Mostramos todas las minas
+    for(let i = 0; i<numFilas; i++){
+        for(let j = 0; j<numFilas; j++){
+            const casilla = obtenerCasillaDOM(i, j);
+            if (mapa[i][j] === "*" && !casilla.classList.contains('mina')){
+                casilla.classList.toggle('mina');
+            }
+        }
     }
-}*/
+
+    if(victoria){
+        mensajeJuego.textContent = "¡Enhorabuena, has ganado!";
+    }else{
+        mensajeJuego.textContent = "¡BOOM! Has perdido. Mejor suerte la próxima vez.";
+    }
+}
 
 //En lugar de usar prompt, usamos el formulario de inicio
 btnIniciar.addEventListener('click', inicializarJuego);
 const tablero = document.getElementById('tablero-visual');
-/*tablero.addEventListener("click", function(e){
-    casilla = e.target.closest(".casilla");
-    const 
-    revelarCasilla(casilla);
-});*/
-
-/*
-//Mostramos el tablero final
-console.log("Estado final del tablero: ");
-console.table(progreso);
-
-//Mensaje final diferenciando si hemos ganado o perdido
-if(vivo){
-    console.log("¡Felicidades! ¡Has ganado!");
-} else {
-    console.log("¡Has perdido! Mejor suerte la próxima vez.");
-}*/

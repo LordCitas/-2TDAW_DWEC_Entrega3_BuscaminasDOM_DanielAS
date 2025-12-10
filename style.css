@@ -14,6 +14,9 @@ body{
     color: white;
     display: flex;
     overflow: hidden;
+    font-family: "Jersey 25", sans-serif;
+    font-weight: 400;
+    font-style: normal;
 }
 
 #izquierda{
@@ -35,6 +38,7 @@ body{
     align-items: center;
     background-color: rgba(0, 0, 0, 0.479);
     border-radius: 15px;
+    text-align: center;
 }
 
 #logo{
@@ -55,6 +59,7 @@ body{
     grid-template-columns: repeat(3, 50px);
     filter: drop-shadow(4px 4px 10px black);
     font-size: 12rem;
+    font-weight: bold;
     padding: 20px;
     background: rgba(0, 0, 0, 0.479);
     height: 850px;
@@ -90,6 +95,7 @@ body{
 
 .fondo1{
     background-image: url("./img/fondo1.jpg");
+    color: black;
 }
 
 .fondo2{
@@ -102,14 +108,17 @@ body{
 
 .fondo4{
     background-image: url("./img/fondo4.webp");
+    color: black;
 }
 
 .fondo5{
     background-image: url("./img/fondo5.webp");
+    color: black;
 }
 
 .fondo6{
     background-image: url("./img/fondo6.webp");
+    color: black;
 }
 
 .fondo7{
@@ -118,4 +127,12 @@ body{
 
 .fondo8{
     background-image: url("./img/fondo8.webp");
+}
+
+.bandera{
+    background-image: url("./img/target.webp");
+}
+
+.mina{
+    background-image: url("./img/tnt.webp");
 }
